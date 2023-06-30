@@ -7,6 +7,9 @@ import com.evi.teamfindergroupsmanagement.domain.TakenInGameRole;
 import com.evi.teamfindergroupsmanagement.exception.*;
 import com.evi.teamfindergroupsmanagement.mapper.GroupRoomMapper;
 import com.evi.teamfindergroupsmanagement.mapper.TakenInGameRoleMapper;
+import com.evi.teamfindergroupsmanagement.messaging.JmsMessagingService;
+import com.evi.teamfindergroupsmanagement.messaging.NotificationMessagingService;
+import com.evi.teamfindergroupsmanagement.messaging.model.Notification;
 import com.evi.teamfindergroupsmanagement.model.GroupRoomDTO;
 import com.evi.teamfindergroupsmanagement.model.GroupRoomUpdateDTO;
 import com.evi.teamfindergroupsmanagement.model.JoinCodeDTO;
@@ -16,11 +19,14 @@ import com.evi.teamfindergroupsmanagement.repository.GroupRepository;
 import com.evi.teamfindergroupsmanagement.repository.TakenInGameRoleRepository;
 import com.evi.teamfindergroupsmanagement.repository.UserRepository;
 import com.evi.teamfindergroupsmanagement.security.model.User;
+import com.evi.teamfindergroupsmanagement.service.feign.ChatServiceFeignClient;
 import com.evi.teamfindergroupsmanagement.utils.GroupRoomSpecification;
 import com.evi.teamfindergroupsmanagement.utils.RandomStringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,6 +47,8 @@ public class GroupRoomServiceImpl implements GroupRoomService {
     private final TakenInGameRoleRepository takenInGameRoleRepository;
     private final CategoryRepository categoryRepository;
     private final TakenInGameRoleMapper takenInGameRoleMapper;
+    private final NotificationMessagingService notificationMessagingService;
+    private final ChatServiceFeignClient chatServiceFeignClient;
 
     @Override
     public GroupRoomDTO getGroupByName(String name) {
@@ -164,6 +172,7 @@ public class GroupRoomServiceImpl implements GroupRoomService {
             //TODO Notyfikacje
             //sseService.sendSseEventToUser(CustomNotificationDTO.builder().msg(user.getUsername() + " joined ").type(NotifType.INFO).build(), groupRoom, null);
 
+            notificationMessagingService.sendNotification(Notification.builder().notificationType(Notification.NotificationType.INFO).userId(null).groupId(groupRoom.getId()).msg(user.getUsername() + " joined ").build());
             return groupRoomMapper.mapGroupRoomToGroupRoomDTO(groupRoom);
         }
     }
@@ -178,6 +187,8 @@ public class GroupRoomServiceImpl implements GroupRoomService {
             groupRoom.setGroupLeader(userToBeLeader);
             //TODO notyfikacje
             //sseService.sendSseEventToUser(CustomNotificationDTO.builder().msg(userToBeLeader.getUsername() + " is now group leader").type(NotifType.INFO).build(), groupRoom, null);
+            notificationMessagingService.sendNotification(Notification.builder().notificationType(Notification.NotificationType.INFO).userId(null).groupId(groupRoom.getId()).msg(userToBeLeader.getUsername() + " is now group leader").build());
+
             return groupRoomMapper.mapGroupRoomToGroupRoomDTO(groupRepository.save(groupRoom));
         }
         throw new NotGroupLeaderException("Not a group leader");
@@ -198,6 +209,8 @@ public class GroupRoomServiceImpl implements GroupRoomService {
 
             //TODO notyfikacje
             //sseService.sendSseEventToUser(CustomNotificationDTO.builder().msg(userToRemove.getUsername() + " has been removed").type(NotifType.REMOVED).build(), groupRoom, userToRemove.getId());
+            notificationMessagingService.sendNotification(Notification.builder().notificationType(Notification.NotificationType.INFO).groupId(groupRoom.getId()).userId(userToRemove.getId()).msg(userToRemove.getUsername() + " has been removed").build());
+
             return groupRoomMapper.mapGroupRoomToGroupRoomDTO(groupRepository.save(groupRoom));
         }
         throw new NotGroupLeaderException("Not a group leader");
@@ -223,6 +236,8 @@ public class GroupRoomServiceImpl implements GroupRoomService {
         GroupRoom groupRoom = createBaseGroup(groupRoomDTO, user);
         //TODO zrobic zeby serwis od czatu to dodal
         //groupRoom.setChat(createChat(groupRoom));
+
+        groupRoom.setChatId(chatServiceFeignClient.createChat(groupRoom.getId()).getBody());
         Category category = categoryRepository.findByName(groupRoom.getCategory().getName());
         groupRoom.setCategory(category);
         groupRoom.setGame(category.getGame());

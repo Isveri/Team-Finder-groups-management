@@ -34,6 +34,8 @@ public class User implements UserDetails, CredentialsContainer {
     @NotBlank
     private String password;
 
+    @Transient
+    private String token;
 
     @ManyToMany
     @JoinTable(

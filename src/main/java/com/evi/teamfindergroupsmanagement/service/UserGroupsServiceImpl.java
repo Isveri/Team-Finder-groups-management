@@ -6,6 +6,9 @@ import com.evi.teamfindergroupsmanagement.exception.AlreadyInGroupException;
 import com.evi.teamfindergroupsmanagement.exception.GroupNotFoundException;
 import com.evi.teamfindergroupsmanagement.exception.UserNotFoundException;
 import com.evi.teamfindergroupsmanagement.mapper.UserGroupListMapper;
+import com.evi.teamfindergroupsmanagement.messaging.JmsMessagingService;
+import com.evi.teamfindergroupsmanagement.messaging.NotificationMessagingService;
+import com.evi.teamfindergroupsmanagement.messaging.model.Notification;
 import com.evi.teamfindergroupsmanagement.model.InGameRolesDTO;
 import com.evi.teamfindergroupsmanagement.model.UserGroupsListDTO;
 import com.evi.teamfindergroupsmanagement.repository.GroupRepository;
@@ -25,6 +28,7 @@ public class UserGroupsServiceImpl implements UserGroupsService {
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
     private final UserGroupListMapper userGroupListMapper;
+    private final NotificationMessagingService notificationMessagingService;
 
 
 
@@ -50,6 +54,7 @@ public class UserGroupsServiceImpl implements UserGroupsService {
 
             //TODO dorobic notyfikacje
             //sseService.sendSseEventToUser(CustomNotificationDTO.builder().msg(user.getUsername() + " joined group").type(CustomNotification.NotifType.INFO).build(), groupRoom, null);
+            notificationMessagingService.sendNotification(Notification.builder().notificationType(Notification.NotificationType.INFO).userId(null).groupId(groupRoom.getId()).msg(user.getUsername() + " joined group").build());
 
         }
     }
@@ -79,6 +84,7 @@ public class UserGroupsServiceImpl implements UserGroupsService {
 
         //TODO notyfikacje
        // sseService.sendSseEventToUser(CustomNotificationDTO.builder().msg(user.getUsername() + " left group").type(CustomNotification.NotifType.REMOVED).build(), groupRoom, user.getId());
+        notificationMessagingService.sendNotification(Notification.builder().notificationType(Notification.NotificationType.REMOVED).userId(user.getId()).groupId(groupRoom.getId()).msg(user.getUsername() + " left group").build());
 
     }
 
