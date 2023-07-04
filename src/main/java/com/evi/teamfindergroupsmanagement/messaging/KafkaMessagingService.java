@@ -2,6 +2,7 @@ package com.evi.teamfindergroupsmanagement.messaging;
 
 import com.evi.teamfindergroupsmanagement.messaging.model.Notification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,12 @@ import org.springframework.stereotype.Service;
 public class KafkaMessagingService implements NotificationMessagingService {
 
     private final KafkaTemplate<String,Notification> kafkaTemplate;
+    @Value("${spring.kafka.template.default-topic}")
+    private String topic;
 
     @Override
     public void sendNotification(Notification notification) {
-        kafkaTemplate.sendDefault(notification);
+        kafkaTemplate.send(topic,notification);
 
     }
 }
