@@ -169,8 +169,6 @@ public class GroupRoomServiceImpl implements GroupRoomService {
                 groupRoom.getTakenInGameRoles().stream().filter((takenInGameRole -> takenInGameRole.getUser() == null)).findFirst().orElseThrow(null).setUser(user);
             }
             userRepository.save(user);
-            //TODO Notyfikacje
-            //sseService.sendSseEventToUser(CustomNotificationDTO.builder().msg(user.getUsername() + " joined ").type(NotifType.INFO).build(), groupRoom, null);
 
             notificationMessagingService.sendNotification(Notification.builder().notificationType(Notification.NotificationType.INFO).userId(null).groupId(groupRoom.getId()).msg(user.getUsername() + " joined ").build());
             return groupRoomMapper.mapGroupRoomToGroupRoomDTO(groupRoom);
@@ -185,8 +183,6 @@ public class GroupRoomServiceImpl implements GroupRoomService {
 
         if (checkPrivilages(groupRoom)) {
             groupRoom.setGroupLeader(userToBeLeader);
-            //TODO notyfikacje
-            //sseService.sendSseEventToUser(CustomNotificationDTO.builder().msg(userToBeLeader.getUsername() + " is now group leader").type(NotifType.INFO).build(), groupRoom, null);
             notificationMessagingService.sendNotification(Notification.builder().notificationType(Notification.NotificationType.INFO).userId(null).groupId(groupRoom.getId()).msg(userToBeLeader.getUsername() + " is now group leader").build());
 
             return groupRoomMapper.mapGroupRoomToGroupRoomDTO(groupRepository.save(groupRoom));
@@ -207,9 +203,7 @@ public class GroupRoomServiceImpl implements GroupRoomService {
             userToRemove.getGroupRooms().remove(groupRoom);
             userRepository.save(userToRemove);
 
-            //TODO notyfikacje
-            //sseService.sendSseEventToUser(CustomNotificationDTO.builder().msg(userToRemove.getUsername() + " has been removed").type(NotifType.REMOVED).build(), groupRoom, userToRemove.getId());
-            notificationMessagingService.sendNotification(Notification.builder().notificationType(Notification.NotificationType.INFO).groupId(groupRoom.getId()).userId(userToRemove.getId()).msg(userToRemove.getUsername() + " has been removed").build());
+            notificationMessagingService.sendNotification(Notification.builder().notificationType(Notification.NotificationType.REMOVED).groupId(groupRoom.getId()).userId(userToRemove.getId()).msg(userToRemove.getUsername() + " has been removed").build());
 
             return groupRoomMapper.mapGroupRoomToGroupRoomDTO(groupRepository.save(groupRoom));
         }
@@ -234,8 +228,6 @@ public class GroupRoomServiceImpl implements GroupRoomService {
 
     private GroupRoom prepareGroupRoom(GroupRoomDTO groupRoomDTO, User user) {
         GroupRoom groupRoom = createBaseGroup(groupRoomDTO, user);
-        //TODO zrobic zeby serwis od czatu to dodal
-        //groupRoom.setChat(createChat(groupRoom));
 
         groupRoom.setChatId(chatServiceFeignClient.createChat(groupRoom.getId()).getBody());
         Category category = categoryRepository.findByName(groupRoom.getCategory().getName());
