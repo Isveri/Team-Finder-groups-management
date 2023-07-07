@@ -3,6 +3,8 @@ package com.evi.teamfindergroupsmanagement.model;
 
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
+
 @Setter
 @Getter
 @Builder
@@ -13,5 +15,6 @@ public class TakenInGameRoleDTO {
 
     private Long id;
     private UserMsgDTO user;
+    @NotNull
     private InGameRolesDTO inGameRole;
 }

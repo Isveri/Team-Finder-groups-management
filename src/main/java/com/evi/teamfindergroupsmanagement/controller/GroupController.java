@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -43,7 +44,7 @@ public class GroupController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> createGroupRoom(@RequestBody GroupRoomDTO groupRoomDTO){
+    public ResponseEntity<?> createGroupRoom(@RequestBody @Valid GroupRoomDTO groupRoomDTO){
         return ResponseEntity.ok(groupRoomService.createGroupRoom(groupRoomDTO));
     }
 
@@ -59,7 +60,7 @@ public class GroupController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateGroupRoom(@PathVariable Long id, @RequestBody GroupRoomUpdateDTO groupRoomUpdateDTO){
+    public ResponseEntity<?> updateGroupRoom(@PathVariable Long id, @RequestBody @Valid GroupRoomUpdateDTO groupRoomUpdateDTO){
         return ResponseEntity.ok(groupRoomService.updateGroupRoom(id,groupRoomUpdateDTO));
     }
 
