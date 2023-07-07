@@ -17,14 +17,14 @@ INSERT INTO Category (id,name, basic_Max_Users, game_id,can_assign_roles) VALUES
 INSERT INTO In_Game_Role (id,name,game_id) VALUES (1,'Mid',1);
 INSERT INTO In_Game_Role (id,name,game_id) VALUES (2,'Bot',1);
 INSERT INTO In_Game_Role (id,name,game_id) VALUES (3,'Top',1);
-INSERT INTO In_Game_Role (id,name,game_id) VALUES (4,'Jng',1);
-INSERT INTO In_Game_Role (id,name,game_id) VALUES (5,'ADC',1);
+INSERT INTO In_Game_Role (id,name,game_id) VALUES (4,'Jungle',1);
+INSERT INTO In_Game_Role (id,name,game_id) VALUES (5,'Supp',1);
 
-INSERT INTO In_Game_Role (id,name,game_id) VALUES (6,'Rifler',2);
+INSERT INTO In_Game_Role (id,name,game_id) VALUES (6,'Fragger',2);
 INSERT INTO In_Game_Role (id,name,game_id) VALUES (7,'Sniper',2);
 INSERT INTO In_Game_Role (id,name,game_id) VALUES (8,'Lurker',2);
-INSERT INTO In_Game_Role (id,name,game_id) VALUES (9,'Entry',2);
-INSERT INTO In_Game_Role (id,name,game_id) VALUES (10,'IGL',2);
+INSERT INTO In_Game_Role (id,name,game_id) VALUES (9,'Leader',2);
+INSERT INTO In_Game_Role (id,name,game_id) VALUES (10,'Support',2);
 
 
 INSERT INTO Group_Room (id,name, description, category_id, game_id, max_Users,

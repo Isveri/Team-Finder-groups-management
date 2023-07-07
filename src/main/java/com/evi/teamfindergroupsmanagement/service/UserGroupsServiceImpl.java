@@ -17,6 +17,7 @@ import com.evi.teamfindergroupsmanagement.security.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.evi.teamfindergroupsmanagement.utils.UserDetailsHelper.getCurrentUser;
@@ -52,8 +53,6 @@ public class UserGroupsServiceImpl implements UserGroupsService {
             }
             userRepository.save(user);
 
-            //TODO dorobic notyfikacje
-            //sseService.sendSseEventToUser(CustomNotificationDTO.builder().msg(user.getUsername() + " joined group").type(CustomNotification.NotifType.INFO).build(), groupRoom, null);
             notificationMessagingService.sendNotification(Notification.builder().notificationType(Notification.NotificationType.INFO).userId(null).groupId(groupRoom.getId()).msg(user.getUsername() + " joined group").build());
 
         }
@@ -72,7 +71,7 @@ public class UserGroupsServiceImpl implements UserGroupsService {
         if (groupRoom.isInGameRolesActive()) {
             groupRoom.getTakenInGameRoles().stream().filter((takenInGameRole) -> user.equals(takenInGameRole.getUser())).findAny().orElse(new TakenInGameRole()).setUser(null);
         }
-        if (Objects.equals(groupRoom.getGroupLeader(), user)) {
+        if (Objects.equals(groupRoom.getGroupLeader(), user) && groupRoom.getUsers().size()!= numberOfMinimumMembers) {
             groupRoom.setGroupLeader(groupRoom.getUsers().stream().filter(usr -> !user.equals(usr)).findFirst().orElseThrow(null));
         }
         if (groupRoom.getUsers().size() == numberOfMinimumMembers) {
@@ -82,8 +81,6 @@ public class UserGroupsServiceImpl implements UserGroupsService {
         }
         userRepository.save(user);
 
-        //TODO notyfikacje
-       // sseService.sendSseEventToUser(CustomNotificationDTO.builder().msg(user.getUsername() + " left group").type(CustomNotification.NotifType.REMOVED).build(), groupRoom, user.getId());
         notificationMessagingService.sendNotification(Notification.builder().notificationType(Notification.NotificationType.REMOVED).userId(user.getId()).groupId(groupRoom.getId()).msg(user.getUsername() + " left group").build());
 
     }
@@ -91,6 +88,15 @@ public class UserGroupsServiceImpl implements UserGroupsService {
     @Override
     public UserGroupsListDTO getUserGroups() {
         return userGroupListMapper.mapUserToUserGroupsListDTO(getUserById(getCurrentUser().getId()));
+    }
+
+    @Override
+    public void getOutOffAllGroups(Long userId) {
+        List<GroupRoom> UserGroupRooms = groupRepository.findAllByGroupLeaderId(userId);
+        for (GroupRoom groupRoom : UserGroupRooms) {
+                this.getOutOfGroup(groupRoom.getId());
+        }
+
     }
 
 

@@ -36,4 +36,11 @@ public class UserGroupsController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping("/exitAllGroups/{userId}")
+    public ResponseEntity<Void> exitAllGroups(@PathVariable Long userId) {
+        userGroupsService.getOutOffAllGroups(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 }

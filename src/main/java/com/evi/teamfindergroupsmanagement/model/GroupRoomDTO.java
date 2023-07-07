@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 public class GroupRoomDTO {
     private Long id;
+
     private String name;
     private String description;
     private int maxUsers;

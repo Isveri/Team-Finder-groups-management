@@ -9,4 +9,6 @@ public interface UserGroupsService {
     void getOutOfGroup(Long groupId);
 
     UserGroupsListDTO getUserGroups();
+
+    void getOutOffAllGroups(Long userId);
 }
