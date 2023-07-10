@@ -9,9 +9,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.springframework.stereotype.Component;
 
-@Component
 @Mapper(builder = @Builder(disableBuilder = true),
-        uses = {UserMapper.class,TakenInGameRoleMapper.class},
+        uses = {UserMapper.class, TakenInGameRoleMapper.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class GroupRoomMapper {
 

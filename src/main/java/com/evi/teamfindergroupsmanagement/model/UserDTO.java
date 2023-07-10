@@ -1,4 +1,4 @@
-package com.evi.teamfindergroupsmanagement.mapper;
+package com.evi.teamfindergroupsmanagement.model;
 
 import com.evi.teamfindergroupsmanagement.model.InGameRolesDTO;
 import com.evi.teamfindergroupsmanagement.model.RoleDTO;

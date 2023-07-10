@@ -8,9 +8,8 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
-@Component
 @Mapper(builder = @Builder(disableBuilder = true),
-        uses = {UserMapper.class,InGameRolesMapper.class},
+        uses = {UserMapper.class, InGameRolesMapper.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class TakenInGameRoleMapper {
 

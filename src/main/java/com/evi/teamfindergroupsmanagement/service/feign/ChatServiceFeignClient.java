@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(name = "chat-service")
 public interface ChatServiceFeignClient {
 
-    @RequestMapping(method = RequestMethod.POST, value="/api/v1/create/{groupId}") //TODO zmienic zeby nie bylo stale w kodzie
+    @RequestMapping(method = RequestMethod.POST, value = "/api/v1/chat/{groupId}")
     ResponseEntity<Long> createChat(@PathVariable Long groupId);
 
 }

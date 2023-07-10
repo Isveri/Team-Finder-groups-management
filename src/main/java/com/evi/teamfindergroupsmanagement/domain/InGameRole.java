@@ -27,7 +27,7 @@ public class InGameRole {
     @JoinColumn(name = "game_id")
     private Game game;
 
-    @ManyToMany(mappedBy = "inGameRoles",cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy = "inGameRoles", cascade = CascadeType.MERGE)
     private List<User> users;
 
 }

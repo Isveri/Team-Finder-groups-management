@@ -22,7 +22,6 @@ import java.util.List;
 @Entity
 @Builder
 @Table(name="users")
-@Where(clause = "deleted=false")
 public class User implements UserDetails, CredentialsContainer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

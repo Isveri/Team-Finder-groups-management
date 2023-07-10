@@ -10,5 +10,5 @@ public interface UserGroupsService {
 
     UserGroupsListDTO getUserGroups();
 
-    void getOutOffAllGroups(Long userId);
+    void getOutOffAllGroups();
 }

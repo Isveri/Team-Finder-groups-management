@@ -12,12 +12,12 @@ import javax.validation.constraints.*;
 @Getter
 public class GroupRoomUpdateDTO {
     @NotBlank
-    @Size(min=3,max=20)
+    @Size(min = 3, max = 20)
     @Pattern(regexp = "^[a-zA-Z0-9.,\\s]{3,30}$")
     private String name;
 
     @NotBlank
-    @Size(min=3,max=150)
+    @Size(min = 3, max = 150)
     @Pattern(regexp = "^[a-zA-Z0-9.,\\s]{3,150}$")
     private String description;
 

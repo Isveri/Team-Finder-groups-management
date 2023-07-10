@@ -32,7 +32,6 @@ public class UserGroupsServiceImpl implements UserGroupsService {
     private final NotificationMessagingService notificationMessagingService;
 
 
-
     @Override
     public void joinGroupRoom(Long groupId, InGameRolesDTO inGameRoles) {
 
@@ -71,7 +70,7 @@ public class UserGroupsServiceImpl implements UserGroupsService {
         if (groupRoom.isInGameRolesActive()) {
             groupRoom.getTakenInGameRoles().stream().filter((takenInGameRole) -> user.equals(takenInGameRole.getUser())).findAny().orElse(new TakenInGameRole()).setUser(null);
         }
-        if (Objects.equals(groupRoom.getGroupLeader(), user) && groupRoom.getUsers().size()!= numberOfMinimumMembers) {
+        if (Objects.equals(groupRoom.getGroupLeader(), user) && groupRoom.getUsers().size() != numberOfMinimumMembers) {
             groupRoom.setGroupLeader(groupRoom.getUsers().stream().filter(usr -> !user.equals(usr)).findFirst().orElseThrow(null));
         }
         if (groupRoom.getUsers().size() == numberOfMinimumMembers) {
@@ -91,21 +90,21 @@ public class UserGroupsServiceImpl implements UserGroupsService {
     }
 
     @Override
-    public void getOutOffAllGroups(Long userId) {
-        List<GroupRoom> UserGroupRooms = groupRepository.findAllByGroupLeaderId(userId);
+    public void getOutOffAllGroups() {
+        List<GroupRoom> UserGroupRooms = groupRepository.findAllByUsersContaining(getCurrentUser());
         for (GroupRoom groupRoom : UserGroupRooms) {
-                this.getOutOfGroup(groupRoom.getId());
+            this.getOutOfGroup(groupRoom.getId());
         }
 
     }
 
 
-    private User getUserById(Long userId){
+    private User getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found id:" + userId));
     }
 
-    private GroupRoom getGroupById(Long groupId){
+    private GroupRoom getGroupById(Long groupId) {
         return groupRepository.findById(groupId)
-                .orElseThrow(() -> new GroupNotFoundException("Group room not found id: "+groupId));
+                .orElseThrow(() -> new GroupNotFoundException("Group room not found id: " + groupId));
     }
 }

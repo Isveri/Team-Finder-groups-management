@@ -26,7 +26,7 @@ public class SearchController {
     }
 
     @GetMapping("/categories/{game}")
-    public ResponseEntity<List<CategoryDTO>> getCategoriesByGame(@PathVariable String game){
+    public ResponseEntity<List<CategoryDTO>> getCategoriesByGame(@PathVariable String game) {
         return ResponseEntity.ok(searchService.getCategoriesByGame(game));
     }
 }

@@ -1,6 +1,7 @@
 package com.evi.teamfindergroupsmanagement.mapper;
 
 
+import com.evi.teamfindergroupsmanagement.model.UserDTO;
 import com.evi.teamfindergroupsmanagement.model.UserMsgDTO;
 import com.evi.teamfindergroupsmanagement.security.model.User;
 import org.mapstruct.Builder;
@@ -11,8 +12,6 @@ import org.mapstruct.MappingTarget;
 public abstract class UserMapper {
 
     public abstract UserDTO mapUserToUserDTO(User user);
-
-    public abstract User updateUserFromUserDTO(UserDTO userDTO, @MappingTarget User user);
 
     public abstract User mapUserDTOToUser(UserDTO userDTO);
 

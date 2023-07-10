@@ -26,7 +26,7 @@ public class Category {
     private int basicMaxUsers;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name="game_id")
+    @JoinColumn(name = "game_id")
     private Game game;
 
     @Builder.Default

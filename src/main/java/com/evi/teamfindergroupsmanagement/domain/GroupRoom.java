@@ -49,13 +49,13 @@ public class GroupRoom {
     @Builder.Default
     private boolean open = true;
 
-    @ManyToMany(mappedBy = "groupRooms",cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy = "groupRooms", cascade = CascadeType.MERGE)
     private List<User> users = new ArrayList<>();
 
     private Long chatId;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
-    @JoinColumn(name="groupLeader_id")
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "groupLeader_id")
     private User groupLeader;
 
     private String joinCode;

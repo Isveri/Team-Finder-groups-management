@@ -7,7 +7,6 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
-@Component
 @Mapper(builder = @Builder(disableBuilder = true),
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class UserGroupListMapper {

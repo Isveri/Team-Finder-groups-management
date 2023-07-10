@@ -12,33 +12,33 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/v1/userGroups/")
+@RequestMapping("api/v1/user-groups")
 public class UserGroupsController {
 
     private final UserGroupsService userGroupsService;
 
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<UserGroupsListDTO> getUserGroups() {
 
         return ResponseEntity.ok(userGroupsService.getUserGroups());
     }
 
-    @PatchMapping("/join/{groupId}")
+    @PatchMapping("/{groupId}")
     public ResponseEntity<Void> joinGroupRoom(@PathVariable Long groupId, @RequestBody InGameRolesDTO inGameRoles) {
-        userGroupsService.joinGroupRoom(groupId,inGameRoles);
+        userGroupsService.joinGroupRoom(groupId, inGameRoles);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/exit/{groupId}")
+    @DeleteMapping("/{groupId}")
     public ResponseEntity<Void> exitGroupRoom(@PathVariable Long groupId) {
         userGroupsService.getOutOfGroup(groupId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/exitAllGroups/{userId}")
-    public ResponseEntity<Void> exitAllGroups(@PathVariable Long userId) {
-        userGroupsService.getOutOffAllGroups(userId);
+    @DeleteMapping("/all")
+    public ResponseEntity<Void> exitAllGroups() {
+        userGroupsService.getOutOffAllGroups();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

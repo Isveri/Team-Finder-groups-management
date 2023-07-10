@@ -50,13 +50,6 @@ public class GroupRoomServiceImpl implements GroupRoomService {
     private final NotificationMessagingService notificationMessagingService;
     private final ChatServiceFeignClient chatServiceFeignClient;
 
-    @Override
-    public GroupRoomDTO getGroupByName(String name) {
-        return groupRoomMapper.mapGroupRoomToGroupRoomDTO(groupRepository.findByName(name)
-                .orElseThrow(() -> new GroupNotFoundException("Group room named: " + name + " not found")));
-
-
-    }
 
     @Override
     public List<GroupRoomDTO> getAllGroups() {
@@ -181,7 +174,7 @@ public class GroupRoomServiceImpl implements GroupRoomService {
         GroupRoom groupRoom = getGroupRoomById(groupId);
         User userToBeLeader = getUserById(userId);
 
-        if (checkPrivilages(groupRoom)) {
+        if (checkPrivilages(groupRoom) && groupRoom.getUsers().contains(userToBeLeader)) {
             groupRoom.setGroupLeader(userToBeLeader);
             notificationMessagingService.sendNotification(Notification.builder().notificationType(Notification.NotificationType.INFO).userId(null).groupId(groupRoom.getId()).msg(userToBeLeader.getUsername() + " is now group leader").build());
 

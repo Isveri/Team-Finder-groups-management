@@ -22,7 +22,6 @@ public class SearchServiceImpl implements SearchService {
     private final CategoryRepository categoryRepository;
 
 
-
     @Override
     public List<GameDTO> getGames() {
         return gameRepository.findAll()
