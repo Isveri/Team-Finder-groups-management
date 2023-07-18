@@ -97,10 +97,8 @@ public class GroupRoomServiceImpl implements GroupRoomService {
 
     @Override
     public GroupRoomDTO updateGroupRoom(Long id, GroupRoomUpdateDTO groupRoomUpdateDTO) {
+
         GroupRoom groupRoom = getGroupRoomById(id);
-
-        //TODO WALIDACJA NOWA
-
         return groupRoomMapper
                 .mapGroupRoomToGroupRoomDTO(
                         groupRepository.save(groupRoomMapper.updateGroupRoomFromGroupRoomUpdateDTO(groupRoomUpdateDTO, groupRoom)));

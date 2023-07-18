@@ -16,6 +16,7 @@ import com.evi.teamfindergroupsmanagement.repository.UserRepository;
 import com.evi.teamfindergroupsmanagement.security.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -57,6 +58,7 @@ public class UserGroupsServiceImpl implements UserGroupsService {
         }
     }
 
+    @Transactional
     @Override
     public void getOutOfGroup(Long groupId) {
 
@@ -89,6 +91,7 @@ public class UserGroupsServiceImpl implements UserGroupsService {
         return userGroupListMapper.mapUserToUserGroupsListDTO(getUserById(getCurrentUser().getId()));
     }
 
+    @Transactional
     @Override
     public void getOutOffAllGroups() {
         List<GroupRoom> UserGroupRooms = groupRepository.findAllByUsersContaining(getCurrentUser());
