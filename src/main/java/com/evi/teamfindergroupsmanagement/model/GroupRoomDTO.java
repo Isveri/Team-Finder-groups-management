@@ -15,13 +15,11 @@ import java.util.List;
 public class GroupRoomDTO {
     private Long id;
 
-    @Size(min = 3)
     @Pattern(regexp = "^[a-zA-Z0-9.,\\s]{3,30}$")
     @NotBlank
     private String name;
 
     @NotBlank
-    @Size(min = 3, max = 150)
     @Pattern(regexp = "^[a-zA-Z0-9.,\\s]{3,150}$")
     private String description;
 

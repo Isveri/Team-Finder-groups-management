@@ -1,14 +1,16 @@
 package com.evi.teamfindergroupsmanagement.controller;
 
+import com.evi.teamfindergroupsmanagement.model.GroupRoomDTO;
 import com.evi.teamfindergroupsmanagement.model.InGameRolesDTO;
 import com.evi.teamfindergroupsmanagement.model.UserGroupsListDTO;
-import com.evi.teamfindergroupsmanagement.repository.GroupRepository;
-import com.evi.teamfindergroupsmanagement.repository.UserRepository;
 import com.evi.teamfindergroupsmanagement.service.UserGroupsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -37,8 +39,13 @@ public class UserGroupsController {
     }
 
     @DeleteMapping("/all")
-    public ResponseEntity<Void> exitAllGroups() {
-        userGroupsService.getOutOffAllGroups();
+    public List<GroupRoomDTO> exitAllGroups() {
+        return userGroupsService.getOutOffAllGroups();
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> rollbackExit(@RequestBody String groupBackupJSON){
+        userGroupsService.rollbackExit(groupBackupJSON);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

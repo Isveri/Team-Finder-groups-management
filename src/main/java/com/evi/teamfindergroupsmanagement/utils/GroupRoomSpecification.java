@@ -20,6 +20,7 @@ public class GroupRoomSpecification implements Specification<GroupRoom> {
 
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(criteriaBuilder.isTrue(root.get("open")));
+        predicates.add(criteriaBuilder.isFalse(root.get("deleted")));
         if (Objects.nonNull(criteria.getCategoryId())) {
             Join<Category, GroupRoom> groupCategory = root.join("category");
             predicates.add(criteriaBuilder.equal(groupCategory.get("id"), criteria.getCategoryId()));

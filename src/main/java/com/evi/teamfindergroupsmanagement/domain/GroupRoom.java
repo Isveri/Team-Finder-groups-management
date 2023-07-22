@@ -16,7 +16,6 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
-@Where(clause = "deleted=false")
 public class GroupRoom {
 
     @Id
@@ -49,7 +48,11 @@ public class GroupRoom {
     @Builder.Default
     private boolean open = true;
 
-    @ManyToMany(mappedBy = "groupRooms", cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_groups",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users = new ArrayList<>();
 
     private Long chatId;

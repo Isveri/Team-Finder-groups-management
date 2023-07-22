@@ -7,7 +7,6 @@ import com.evi.teamfindergroupsmanagement.domain.TakenInGameRole;
 import com.evi.teamfindergroupsmanagement.exception.*;
 import com.evi.teamfindergroupsmanagement.mapper.GroupRoomMapper;
 import com.evi.teamfindergroupsmanagement.mapper.TakenInGameRoleMapper;
-import com.evi.teamfindergroupsmanagement.messaging.JmsMessagingService;
 import com.evi.teamfindergroupsmanagement.messaging.NotificationMessagingService;
 import com.evi.teamfindergroupsmanagement.messaging.model.Notification;
 import com.evi.teamfindergroupsmanagement.model.GroupRoomDTO;
@@ -25,8 +24,6 @@ import com.evi.teamfindergroupsmanagement.utils.RandomStringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -69,7 +66,7 @@ public class GroupRoomServiceImpl implements GroupRoomService {
     @Override
     public Page<GroupRoomDTO> getGroupsByGame(String game, Pageable pageable) {
 
-        return groupRepository.findAllByGameNameAndOpenIsTrue(game, pageable)
+        return groupRepository.findAllByGameNameAndOpenIsTrueAndDeletedFalse(game, pageable)
                 .map(groupRoomMapper::mapGroupRoomToGroupRoomDTO);
     }
 
@@ -82,7 +79,7 @@ public class GroupRoomServiceImpl implements GroupRoomService {
 
     @Override
     public List<GroupRoomDTO> getDeletedGroups() {
-        return groupRepository.findAllDeletedGroups().stream()
+        return groupRepository.findAllByDeletedTrue().stream()
                 .map(groupRoomMapper::mapGroupRoomToGroupRoomDTO)
                 .collect(Collectors.toList());
     }
@@ -90,7 +87,7 @@ public class GroupRoomServiceImpl implements GroupRoomService {
 
     @Override
     public GroupRoomDTO getGroupById(Long groupId) {
-        return groupRepository.findById(groupId)
+        return groupRepository.findByIdAndDeletedFalse(groupId)
                 .map(groupRoomMapper::mapGroupRoomToGroupRoomDTO)
                 .orElseThrow(() -> new GroupNotFoundException("Group room not found, ID:" + groupId));
     }
@@ -111,7 +108,8 @@ public class GroupRoomServiceImpl implements GroupRoomService {
             for (User user : groupRoom.getUsers()) {
                 user.getGroupRooms().remove(groupRoom);
             }
-            groupRepository.softDeleteById(id);
+            groupRoom.setDeleted(true);
+            groupRepository.save(groupRoom);
         } else {
             throw new NotGroupLeaderException("You are not a leader of this group or admin");
 
@@ -148,7 +146,7 @@ public class GroupRoomServiceImpl implements GroupRoomService {
     public GroupRoomDTO joinGroupByCode(String code) {
         User user = getUserById(getCurrentUser().getId());
 
-        GroupRoom groupRoom = groupRepository.findGroupRoomByJoinCode(code);
+        GroupRoom groupRoom = groupRepository.findGroupRoomByJoinCodeAndDeletedFalse(code);
         if (groupRoom == null) {
             throw new CodeDoesntExistException("Code doesnt fit any group");
         }
@@ -203,7 +201,7 @@ public class GroupRoomServiceImpl implements GroupRoomService {
 
     private String getUniqueCode() {
         String generatedCode = RandomStringUtils.getRandomString();
-        if (groupRepository.existsByJoinCode(generatedCode)) {
+        if (groupRepository.existsByJoinCodeAndDeletedFalse(generatedCode)) {
             return getUniqueCode();
         }
         return generatedCode;
@@ -214,13 +212,17 @@ public class GroupRoomServiceImpl implements GroupRoomService {
     }
 
     private GroupRoom getGroupRoomById(Long id) {
-        return groupRepository.findById(id).orElseThrow(() -> new GroupNotFoundException("Group room not found id:" + id));
+        return groupRepository.findByIdAndDeletedFalse(id).orElseThrow(() -> new GroupNotFoundException("Group room not found id:" + id));
     }
 
     private GroupRoom prepareGroupRoom(GroupRoomDTO groupRoomDTO, User user) {
         GroupRoom groupRoom = createBaseGroup(groupRoomDTO, user);
 
-        groupRoom.setChatId(chatServiceFeignClient.createChat(groupRoom.getId()).getBody());
+        Long chatId = chatServiceFeignClient.createChat(groupRoom.getId()).getBody();
+        if(Objects.equals(chatId,null)){
+            throw new RuntimeException("There is problem creating group chat, try again later");
+        }
+        groupRoom.setChatId(chatId);
         Category category = categoryRepository.findByName(groupRoom.getCategory().getName());
         groupRoom.setCategory(category);
         groupRoom.setGame(category.getGame());
