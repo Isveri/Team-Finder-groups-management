@@ -55,6 +55,7 @@ public class GroupRoom {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users = new ArrayList<>();
 
+    @Column(name = "chat_id")
     private Long chatId;
 
     @ManyToOne(cascade = CascadeType.MERGE)

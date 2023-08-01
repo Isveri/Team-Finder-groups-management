@@ -23,6 +23,8 @@ public interface GroupRepository extends JpaRepository<GroupRoom, Long>, JpaSpec
 
     Optional<GroupRoom> findByIdAndDeletedFalse(Long id);
     List<GroupRoom> findAllByDeletedTrue();
+
+    List<GroupRoom> findAllByDeletedFalse();
     Page<GroupRoom> findAllByGameNameAndOpenIsTrueAndDeletedFalse(String name, Pageable pageable);
     List<GroupRoom> findAllByUsersContainingAndDeletedFalse(User user);
 

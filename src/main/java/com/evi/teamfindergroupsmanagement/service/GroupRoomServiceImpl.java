@@ -50,7 +50,7 @@ public class GroupRoomServiceImpl implements GroupRoomService {
 
     @Override
     public List<GroupRoomDTO> getAllGroups() {
-        return groupRepository.findAll()
+        return groupRepository.findAllByDeletedFalse()
                 .stream()
                 .map(groupRoomMapper::mapGroupRoomToGroupRoomDTO)
                 .collect(Collectors.toList());
